@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      width: 340px;
+      max-height: 560px;
+      font: 14px/1.5 -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+      color: #222;
+    }
+    header {
+      display: flex;
+      align-items: center;
+      padding: 10px 12px;
+      border-bottom: 1px solid #eee;
+    }
+    header h1 { font-size: 15px; }
+    #export {
+      margin-left: auto;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      background: #fff;
+      padding: 2px 8px;
+      font-size: 12px;
+      cursor: pointer;
+    }
+    #export:hover { background: #f5f5f5; }
+    #search {
+      display: flex;
+      gap: 6px;
+      padding: 10px 12px;
+      border-bottom: 1px solid #eee;
+    }
+    #word-input {
+      flex: 1;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      padding: 4px 8px;
+      font-size: 14px;
+    }
+    #word-input:focus { outline: none; border-color: #4a7cf7; }
+    #lookup-btn {
+      border: none;
+      border-radius: 4px;
+      background: #4a7cf7;
+      color: #fff;
+      padding: 4px 12px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+    #lookup-btn:hover { background: #3565e0; }
+    #result {
+      padding: 10px 12px;
+      border-bottom: 2px solid #4a7cf7;
+      background: #f8faff;
+    }
+    #result .head { display: flex; align-items: center; }
+    #result .word { font-size: 17px; font-weight: 600; }
+    #result .fav {
+      margin-left: auto;
+      border: none; background: none;
+      font-size: 20px; line-height: 1; cursor: pointer;
+      color: #ccc;
+      padding: 2px 4px; border-radius: 6px;
+      transition: color .15s ease, transform .15s ease, background .15s ease;
+    }
+    #result .fav:hover { background: rgba(0,0,0,.05); }
+    #result .fav.on { color: #f5a623; }
+    .fav.pop { animation: fav-pop .3s ease; }
+    @keyframes fav-pop {
+      0%   { transform: scale(1); }
+      40%  { transform: scale(1.4); }
+      70%  { transform: scale(.9); }
+      100% { transform: scale(1); }
+    }
+    #result .phones { margin: 2px 0 6px; color: #666; font-size: 13px; }
+    #result .phone { cursor: pointer; margin-right: 10px; }
+    #result .phone:hover { color: #4a7cf7; }
+    #result .defs div { margin-bottom: 2px; font-size: 13px; }
+    #result .rphrases { margin-top: 6px; border-top: 1px solid #e3e9f7; padding-top: 6px; }
+    #result .rphrase { font-size: 12px; color: #666; margin-bottom: 2px; }
+    #result .rphrase b { color: #333; }
+    #result .msg { color: #999; font-size: 13px; }
+    #list { overflow-y: auto; max-height: 400px; }
+    .item { border-bottom: 1px solid #f0f0f0; padding: 8px 12px; }
+    .row { display: flex; align-items: baseline; gap: 8px; }
+    .word { font-weight: 600; cursor: pointer; }
+    .phone { color: #888; font-size: 12px; }
+    .del {
+      margin-left: auto;
+      border: none; background: none;
+      color: #f5a623; cursor: pointer; font-size: 20px; line-height: 1;
+      padding: 2px 4px; border-radius: 6px;
+      transition: color .15s ease, transform .15s ease, background .15s ease;
+    }
+    .del:hover { background: rgba(0,0,0,.05); }
+    .defs { color: #555; font-size: 13px; margin-top: 2px; }
+    .phrases { display: none; margin-top: 4px; padding-left: 8px; border-left: 2px solid #eee; }
+    .item.open .phrases { display: block; }
+    .phrase { font-size: 12px; color: #666; }
+    .phrase b { color: #333; }
+    #empty { padding: 30px 0; text-align: center; color: #999; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Tiny Translator</h1>
+    <button id="export">导出 JSON</button>
+  </header>
+  <div id="search">
+    <input id="word-input" type="text" placeholder="输入英文单词，回车翻译" autocomplete="off">
+    <button id="lookup-btn">译</button>
+  </div>
+  <div id="result" hidden></div>
+  <div id="list"></div>
+  <div id="empty" hidden>还没有收藏，划词翻译后点 ★ 收藏</div>
+  <script type="module" src="popup.js"></script>
+</body>
+</html>
