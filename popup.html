@@ -17,16 +17,38 @@
       border-bottom: 1px solid #eee;
     }
     header h1 { font-size: 15px; }
-    #export {
+    .data-actions {
       margin-left: auto;
       border: 1px solid #ccc;
       border-radius: 4px;
+      display: flex;
+      overflow: hidden;
+    }
+    .data-action {
+      border: none;
       background: #fff;
-      padding: 2px 8px;
+      padding: 3px 8px;
       font-size: 12px;
       cursor: pointer;
     }
-    #export:hover { background: #f5f5f5; }
+    .data-action + .data-action { border-left: 1px solid #ddd; }
+    .data-action:hover { background: #f5f5f5; }
+    .data-action:focus-visible {
+      outline: 2px solid #4a7cf7;
+      outline-offset: -2px;
+    }
+    #import-file { display: none; }
+    #notice {
+      padding: 6px 12px;
+      border-bottom: 1px solid #eee;
+      background: #f1f6ff;
+      color: #3565e0;
+      font-size: 12px;
+    }
+    #notice.error {
+      background: #fff3f3;
+      color: #c33;
+    }
     #search {
       display: flex;
       gap: 6px;
@@ -107,8 +129,13 @@
 <body>
   <header>
     <h1>Tiny Translator</h1>
-    <button id="export">导出 JSON</button>
+    <div class="data-actions" role="group" aria-label="收藏数据管理">
+      <button id="import" class="data-action" type="button" title="从 JSON 备份导入收藏">导入</button>
+      <button id="export" class="data-action" type="button" title="将收藏导出为 JSON 备份">导出</button>
+    </div>
+    <input id="import-file" type="file" accept="application/json,.json">
   </header>
+  <div id="notice" role="status" aria-live="polite" hidden></div>
   <div id="search">
     <input id="word-input" type="text" placeholder="输入英文单词，回车翻译" autocomplete="off">
     <button id="lookup-btn">译</button>

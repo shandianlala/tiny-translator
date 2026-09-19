@@ -1,4 +1,5 @@
 import { isTranslatableWord } from './parse.mjs';
+import { mergeFavorites, parseFavoritesBackup } from './favorites.mjs';
 
 const VOICE_URL = 'https://dict.youdao.com/dictvoice?audio=';
 
@@ -7,6 +8,21 @@ const emptyEl = document.getElementById('empty');
 const resultEl = document.getElementById('result');
 const inputEl = document.getElementById('word-input');
 const lookupBtn = document.getElementById('lookup-btn');
+const importBtn = document.getElementById('import');
+const importFileEl = document.getElementById('import-file');
+const noticeEl = document.getElementById('notice');
+
+let noticeTimer;
+
+function showNotice(text, isError = false) {
+  clearTimeout(noticeTimer);
+  noticeEl.textContent = text;
+  noticeEl.classList.toggle('error', isError);
+  noticeEl.hidden = false;
+  noticeTimer = setTimeout(() => {
+    noticeEl.hidden = true;
+  }, 5000);
+}
 
 // ---- 收藏列表 ----
 
@@ -205,6 +221,26 @@ inputEl.focus();
 // ---- 其他 ----
 
 refreshList();
+
+importBtn.addEventListener('click', () => importFileEl.click());
+
+importFileEl.addEventListener('change', async () => {
+  const file = importFileEl.files && importFileEl.files[0];
+  importFileEl.value = '';
+  if (!file) return;
+
+  try {
+    if (file.size > 5 * 1024 * 1024) throw new Error('文件不能超过 5 MB');
+    const imported = parseFavoritesBackup(await file.text());
+    const existing = await chrome.storage.local.get('favorites');
+    const { favorites, stats } = mergeFavorites(existing.favorites || {}, imported);
+    await chrome.storage.local.set({ favorites });
+    render(favorites);
+    showNotice(`导入完成：新增 ${stats.added}，更新 ${stats.updated}，跳过 ${stats.skipped}`);
+  } catch (error) {
+    showNotice(`导入失败：${error.message || '文件格式不正确'}`, true);
+  }
+});
 
 document.getElementById('export').addEventListener('click', () => {
   chrome.storage.local.get('favorites', ({ favorites = {} }) => {
